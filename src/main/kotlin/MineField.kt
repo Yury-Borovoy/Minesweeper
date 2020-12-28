@@ -4,7 +4,7 @@ class MineField {
 
     fun putMines(input: Int) {
         val mines = if (input > length * height) {
-            length * height - 1
+            length * height
         } else {
             input
         }
@@ -21,197 +21,26 @@ class MineField {
             }
             installed = false
         }
-
     }
 
-    fun installNumbersInEmptyPlaces() {
-        for (line in field.indices) {
-            for (cage in field[line].indices) {
-                if (field[line][cage] != 'X') {
-                    countMinesAroundPlace(line, cage)
+
+    fun checkAroundPlace(y: Int, x: Int): Int {
+        if (outBounds(y, x)) return 0
+        var mines = 0
+        for (line in -1..1) {
+            for (cage in -1..1) {
+                if (!outBounds(line + y, cage + x)) {
+                    if (field[line + y][cage + x] == 'X' || field[line + y][cage + x] == '*') {
+                        mines++
+                    }
                 }
             }
         }
+        return mines
     }
 
-    private fun countMinesAroundPlace(line: Int, cage: Int) {
-        var count = 0
-        when {
-            //upper left corner
-            line == 0 && cage == 0 -> {
-                if (field[line][cage + 1] == 'X') {
-                    count++
-                }
-                if (field[line + 1][cage] == 'X') {
-                    count++
-                }
-                if (field[line + 1][cage + 1] == 'X') {
-                    count++
-                }
-                if (count > 0) {
-                    field[line][cage] = count.toString().first()
-                }
-            }
-            //upper right corner
-            line == 0 && cage == field[0].size - 1 -> {
-                if (field[line][cage - 1] =='X') {
-                    count++
-                }
-                if (field[line + 1][cage] == 'X') {
-                    count++
-                }
-                if (field[line + 1][cage - 1] == 'X') {
-                    count++
-                }
-                if (count > 0) {
-                    field[line][cage] = count.toString().first()
-                }
-            }
-            //lower left corner
-            line == field.size - 1 && cage == 0 -> {
-                if (field[line - 1][cage] =='X') {
-                    count++
-                }
-                if (field[line - 1][cage + 1] == 'X') {
-                    count++
-                }
-                if (field[line][cage + 1] == 'X') {
-                    count++
-                }
-                if (count > 0) {
-                    field[line][cage] = count.toString().first()
-                }
-            }
-            //lower right corner
-            line == field.size - 1 && cage == field[0].size - 1 -> {
-                if (field[line - 1][cage] =='X') {
-                    count++
-                }
-                if (field[line - 1][cage - 1] == 'X') {
-                    count++
-                }
-                if (field[line][cage - 1] == 'X') {
-                    count++
-                }
-                if (count > 0) {
-                    field[line][cage] = count.toString().first()
-                }
-            }
-            //left side
-            cage == 0 -> {
-                if (field[line - 1][cage] =='X') {
-                    count++
-                }
-                if (field[line - 1][cage + 1] == 'X') {
-                    count++
-                }
-                if (field[line][cage + 1] == 'X') {
-                    count++
-                }
-                if (field[line + 1][cage + 1] == 'X') {
-                    count++
-                }
-                if (field[line + 1][cage] == 'X') {
-                    count++
-                }
-                if (count > 0) {
-                    field[line][cage] = count.toString().first()
-                }
-            }
-            //right side
-            cage == field[0].size - 1 -> {
-                if (field[line - 1][cage] =='X') {
-                    count++
-                }
-                if (field[line - 1][cage - 1] == 'X') {
-                    count++
-                }
-                if (field[line][cage - 1] == 'X') {
-                    count++
-                }
-                if (field[line + 1][cage - 1] == 'X') {
-                    count++
-                }
-                if (field[line + 1][cage] == 'X') {
-                    count++
-                }
-                if (count > 0) {
-                    field[line][cage] = count.toString().first()
-                }
-            }
-            //upper side
-            line == 0 -> {
-                if (field[line][cage - 1] =='X') {
-                    count++
-                }
-                if (field[line][cage + 1] == 'X') {
-                    count++
-                }
-                if (field[line + 1][cage - 1] == 'X') {
-                    count++
-                }
-                if (field[line + 1][cage + 1] == 'X') {
-                    count++
-                }
-                if (field[line + 1][cage] == 'X') {
-                    count++
-                }
-                if (count > 0) {
-                    field[line][cage] = count.toString().first()
-                }
-            }
-            //lower side
-            line == field.size - 1 -> {
-                if (field[line][cage - 1] =='X') {
-                    count++
-                }
-                if (field[line][cage + 1] == 'X') {
-                    count++
-                }
-                if (field[line - 1][cage - 1] == 'X') {
-                    count++
-                }
-                if (field[line - 1][cage + 1] == 'X') {
-                    count++
-                }
-                if (field[line - 1][cage] == 'X') {
-                    count++
-                }
-                if (count > 0) {
-                    field[line][cage] = count.toString().first()
-                }
-            }
-            //center
-            else -> {
-                if (field[line][cage - 1] =='X') {
-                    count++
-                }
-                if (field[line][cage + 1] == 'X') {
-                    count++
-                }
-                if (field[line - 1][cage - 1] == 'X') {
-                    count++
-                }
-                if (field[line - 1][cage + 1] == 'X') {
-                    count++
-                }
-                if (field[line - 1][cage] == 'X') {
-                    count++
-                }
-                if (field[line + 1][cage - 1] == 'X') {
-                    count++
-                }
-                if (field[line + 1][cage + 1] == 'X') {
-                    count++
-                }
-                if (field[line + 1][cage] == 'X') {
-                    count++
-                }
-                if (count > 0) {
-                    field[line][cage] = count.toString().first()
-                }
-            }
-        }
+    fun outBounds(y: Int, x: Int): Boolean {
+        return y < 0 || x < 0 || y >= height || x >= length
     }
 
     fun showField() {
@@ -222,13 +51,45 @@ class MineField {
             countRows++
             print("$countRows|")
             for (cage in field[line].indices) {
-                if (field[line][cage] == 'X') {
-                    print('.')
-                } else if (field[line][cage] == '-') {
-                    print('*')
+                when {
+                    field[line][cage] == 'X' -> {
+                        print('.')
+                    }
+                    field[line][cage] == '-' -> {
+                        print('*')
+                    }
+                    else -> {
+                        print(field[line][cage])
+                    }
                 }
-                else {
-                    print(field[line][cage])
+            }
+            print("|")
+            println()
+        }
+        println("-|---------|")
+    }
+
+    fun showFieldWithMines() {
+        var countRows = 0
+        println(" |123456789|")
+        println("-|---------|")
+        for (line in field.indices) {
+            countRows++
+            print("$countRows|")
+            for (cage in field[line].indices) {
+                when {
+                    field[line][cage] == 'X' -> {
+                        print('X')
+                    }
+                    field[line][cage] == '-' -> {
+                        print('.')
+                    }
+                    field[line][cage] == '*' -> {
+                        print('X')
+                    }
+                    else -> {
+                        print(field[line][cage])
+                    }
                 }
             }
             print("|")
@@ -242,6 +103,9 @@ class MineField {
         private const val height = 9
         val field = Array(height) {
             Array(length){'.'}
+        }
+        val revealedPlaces = Array(height) {
+            Array(length){false}
         }
     }
 }
